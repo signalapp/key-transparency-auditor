@@ -1,0 +1,50 @@
+/*
+ * Copyright 2024 Signal Messenger, LLC
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package org.signal.keytransparency.audit.storage;
+
+message AuditorState {
+  /**
+   * The number of updates the auditor has processed so far.
+   */
+  uint64 total_updates_processed = 1;
+  /**
+   * The hash of the current prefix tree root.
+   */
+  bytes current_prefix_tree_root_hash = 2;
+  /**
+   * An ordered list of log tree nodes sufficient to reconstruct the log tree root hash
+   * after the given number of updates.
+   */
+  repeated LogTreeNode log_tree_nodes = 3;
+}
+
+message LogTreeNode {
+  /**
+   * The node ID.
+   */
+  uint64 id = 1;
+  /**
+   * The hash stored by the node
+   */
+  bytes hash = 2;
+}
+
+message AuditorStateAndSignature {
+  /**
+   * State data sufficient for the auditor to pick up where it left off in processing key transparency updates; this is
+   * an `AuditorState` entity in its serialized form.
+   */
+  bytes serialized_auditor_state = 1;
+
+  /**
+   * A signature over the auditor state data
+   */
+  bytes signature = 2;
+}

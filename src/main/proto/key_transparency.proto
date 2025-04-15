@@ -1,0 +1,155 @@
+/*
+ * Copyright 2024 Signal Messenger, LLC
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.signal.keytransparency.audit.client";
+
+package kt;
+
+import "google/protobuf/empty.proto";
+
+/**
+ * A key transparency service used to update the transparency log and to accept auditor-signed tree heads.
+ * With the exception of the third-party auditor, this service's endpoints are *not* intended to be used by external clients.
+ * It will reject calls from unauthenticated callers.
+ */
+service KeyTransparencyService {
+  /**
+   * Auditors use this endpoint to request a batch of key transparency service updates to audit.
+   */
+  rpc Audit(AuditRequest) returns (AuditResponse) {}
+  /**
+   * Auditors use this endpoint to return a signature on the log tree root hash corresponding to the last audited update.
+   */
+  rpc SetAuditorHead(TreeHead) returns (google.protobuf.Empty) {}
+}
+
+
+message AuditRequest {
+  /**
+   * The index of the next update to process.
+   */
+  uint64 start = 1;
+  /**
+   * The maximum number of updates to return for auditing, starting from the given index.
+   * The key transparency service will reject requests where the limit is set greater than 1000.
+   */
+  uint64 limit = 2;
+}
+
+message AuditResponse {
+  /**
+   * A list of updates for the auditor to audit.
+   */
+  repeated AuditorUpdate updates = 1;
+  /**
+   * Whether there are additional updates for the auditor to audit.
+   */
+  bool more = 2;
+}
+
+message AuditorUpdate {
+  /**
+   * Whether the update was real or fake.
+   */
+  bool real = 1;
+  /**
+   * The VRF output of the search key that was updated. This value is used to search the prefix tree
+   * and to calculate the prefix tree leaf hash.
+   * This is a randomly generated value if the update is fake.
+   */
+  bytes index = 2;
+  /**
+   * A pseudo-random value that is hashed with a level n to generate a stand-in value for that level in the prefix tree.
+   */
+  bytes seed = 3;
+  /**
+   * A cryptographic hash of the update; it is used to calculate the log tree leaf hash.
+   * This is a randomly generated value if the update is fake.
+   */
+  bytes commitment = 4;
+  /**
+   * Additional information to help the auditor efficiently verify that the update
+   * uses the auditor's current prefix tree root hash as a starting point.
+   */
+  AuditorProof proof = 5;
+}
+
+message AuditorProof {
+  /**
+   * Returned for the very first update in the key transparency service.
+   * Can only be applied to a real update.
+   */
+  message NewTree {}
+
+  /**
+   * Returned if there has been at least one real update so far,
+   * and the given update does not affect an existing leaf in the prefix tree.
+   * This means that the search for AuditorUpdate.index in the prefix tree ended in a stand-in hash value.
+   * Can be applied to real or fake updates.
+   */
+  message DifferentKey {
+    /**
+     * The list of sibling hashes up to and including the sibling of the stand-in hash value.
+     * This list is returned in root-to-leaf order.
+     */
+    repeated bytes copath = 1;
+    /**
+     * Used to calculate the stand-in hash value where the search ended.
+     */
+    bytes old_seed = 2;
+  }
+
+  /**
+   * Returned if there has been at least one real update so far,
+   * and the given update affects an existing leaf in the prefix tree.
+   * This means that to verify the previous prefix tree root hash, the auditor must begin all the way from
+   * the prefix tree leaf hash and hash their way up to the root hash.
+   * Can only be applied to real updates.
+   */
+  message SameKey {
+    /**
+     * Hashes of the siblings of nodes in the direct path to the given leaf.
+     * This list only contains hashes that are in the direct path of another leaf (the "explored part" of the prefix tree).
+     * Use AuditorUpdate.seed to calculate stand-in hashes in the "unexplored" part of the prefix tree.
+     */
+    repeated bytes copath = 1;
+    /**
+     * The number of times that the value associated with the search key has been updated.
+     * Used to calculate the previous prefix tree leaf hash.
+     */
+    uint32 counter = 2;
+    /**
+     * The position of the first instance of the search key in the log tree.
+     * Used to calculate the previous prefix tree leaf hash.
+     */
+    uint64 position = 3;
+  }
+
+  oneof proof {
+    NewTree new_tree = 1;
+    DifferentKey different_key = 3;
+    SameKey same_key = 4;
+  }
+}
+
+
+message TreeHead {
+  /**
+   * The number of updates in the audited log tree.
+   */
+  uint64 tree_size = 1;
+  /**
+   * When the signature was created.
+   */
+  int64 timestamp = 2;
+  /**
+   * A signature computed over the auditor's view of the log tree's current state and
+   * long-term log configuration.
+   */
+  bytes signature = 3;
+}
