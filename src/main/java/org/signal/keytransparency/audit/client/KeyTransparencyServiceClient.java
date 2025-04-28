@@ -77,7 +77,11 @@ public class KeyTransparencyServiceClient {
             .setLimit(batchSize)
             .build()))
         .doOnNext(auditResponse -> getUpdatesDistributionSummary.record(auditResponse.getUpdatesCount()))
-        .map(auditResponse -> Tuples.of(auditResponse, start + auditResponse.getUpdatesCount()));
+        .map(auditResponse -> Tuples.of(auditResponse, start + auditResponse.getUpdatesCount()))
+        .onErrorResume(throwable -> {
+          logger.error("Unexpected error fetching updates", throwable);
+          return Mono.empty();
+        });
   }
 
   @VisibleForTesting
@@ -118,7 +122,7 @@ public class KeyTransparencyServiceClient {
     try {
       stub.setAuditorHead(treeHead);
       sendSignedTreeHeadCounter.increment();
-    } catch (final StatusRuntimeException e) {
+    } catch (final Exception e) {
       logger.error("Encountered error sending signed tree head to the key transparency service", e);
       throw e;
     }
