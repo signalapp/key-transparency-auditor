@@ -36,8 +36,8 @@ class KeyTransparencyServiceStubFactory {
 
   @Singleton
   KeyTransparencyServiceGrpc.KeyTransparencyServiceBlockingStub keyTransparencyServiceClient(
-      @Value("${auditor.key-transparency-service-host}") String host,
-      @Value("${auditor.key-transparency-service-port}") int port,
+      @Value("${auditor.key-transparency-host}") String host,
+      @Value("${auditor.key-transparency-port}") int port,
       @Value("${auditor.client-certificate}") String clientCertificate,
       @Value("${auditor.client-private-key}") String clientPrivateKey) {
     try (
