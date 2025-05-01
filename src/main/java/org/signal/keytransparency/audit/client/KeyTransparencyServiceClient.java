@@ -7,7 +7,6 @@ package org.signal.keytransparency.audit.client;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.ByteString;
-import io.grpc.StatusRuntimeException;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -114,7 +113,7 @@ public class KeyTransparencyServiceClient {
    *                  configuration
    */
   public void setTreeHead(final long treeSize, final long timestamp, final byte[] signature) {
-    final TreeHead treeHead = TreeHead.newBuilder()
+    final AuditorTreeHead treeHead = AuditorTreeHead.newBuilder()
         .setTreeSize(treeSize)
         .setTimestamp(timestamp)
         .setSignature(ByteString.copyFrom(signature))

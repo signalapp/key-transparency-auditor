@@ -25,7 +25,7 @@ service KeyTransparencyService {
   /**
    * Auditors use this endpoint to return a signature on the log tree root hash corresponding to the last audited update.
    */
-  rpc SetAuditorHead(TreeHead) returns (google.protobuf.Empty) {}
+  rpc SetAuditorHead(AuditorTreeHead) returns (google.protobuf.Empty) {}
 }
 
 
@@ -138,7 +138,7 @@ message AuditorProof {
 }
 
 
-message TreeHead {
+message AuditorTreeHead {
   /**
    * The number of updates in the audited log tree.
    */
