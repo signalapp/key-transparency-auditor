@@ -11,6 +11,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.scheduling.annotation.Scheduled;
 import jakarta.annotation.PostConstruct;
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * transparency service.
  */
 @Singleton
+@Requires(notEnv = "test")
 public class Auditor {
 
   private static final Logger logger = LoggerFactory.getLogger(Auditor.class);
