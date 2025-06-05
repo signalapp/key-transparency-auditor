@@ -39,6 +39,7 @@ message TestVectors {
     bytes root = 6;
 
     bytes signature = 7;
+    bytes signature_input = 10;
   }
 
   repeated ShouldFailTestVector should_fail = 1;
