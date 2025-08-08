@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
-import org.signal.keytransparency.audit.client.KeyTransparencyServiceClient;
+import org.signal.keytransparency.audit.client.KeyTransparencyAuditorServiceClient;
 import org.signal.keytransparency.audit.metrics.MetricsUtil;
 import org.signal.keytransparency.audit.storage.AuditorState;
 import org.signal.keytransparency.audit.storage.AuditorStateAndSignature;
@@ -62,7 +62,7 @@ public class Auditor {
   private final DistributionSummary updatesPerBatchDistributionSummary;
   private final AuditorConfiguration configuration;
   private final AuditorStateRepository auditorStorage;
-  private final KeyTransparencyServiceClient keyTransparencyServiceClient;
+  private final KeyTransparencyAuditorServiceClient keyTransparencyServiceClient;
   private final int sendSignaturePageSize;
   private final Duration sendSignatureInterval;
   private final ReentrantLock treeUpdateLock;
@@ -75,7 +75,7 @@ public class Auditor {
 
   public Auditor(final AuditorConfiguration configuration,
       final AuditorStateRepository auditorStorage,
-      final KeyTransparencyServiceClient keyTransparencyServiceClient,
+      final KeyTransparencyAuditorServiceClient keyTransparencyServiceClient,
       // the auditor must be no more than 1e7 entries behind
       @Value("${auditor.signature.page-size:1000000}") int sendSignaturePageSize,
       // the auditor must be no more than 7 days behind

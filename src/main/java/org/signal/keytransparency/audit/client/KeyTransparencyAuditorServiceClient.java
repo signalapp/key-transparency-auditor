@@ -28,20 +28,20 @@ import java.time.Duration;
  * A client that talks to the key transparency service to request updates or provide a signed tree head.
  */
 @Singleton
-public class KeyTransparencyServiceClient {
+public class KeyTransparencyAuditorServiceClient {
 
-  private final KeyTransparencyServiceGrpc.KeyTransparencyServiceBlockingStub stub;
+  private final KeyTransparencyAuditorServiceGrpc.KeyTransparencyAuditorServiceBlockingStub stub;
   private final Counter sendSignedTreeHeadCounter;
   private final DistributionSummary getUpdatesDistributionSummary;
-  private static final Logger logger = LoggerFactory.getLogger(KeyTransparencyServiceClient.class);
+  private static final Logger logger = LoggerFactory.getLogger(KeyTransparencyAuditorServiceClient.class);
 
-  public KeyTransparencyServiceClient(final KeyTransparencyServiceGrpc.KeyTransparencyServiceBlockingStub stub,
-      final MeterRegistry meterRegistry) {
+  public KeyTransparencyAuditorServiceClient(final KeyTransparencyAuditorServiceGrpc.KeyTransparencyAuditorServiceBlockingStub stub,
+                                             final MeterRegistry meterRegistry) {
     this.stub = stub;
     this.sendSignedTreeHeadCounter = meterRegistry.counter(
-        MetricsUtil.name(KeyTransparencyServiceClient.class, "sendSignedTreeHead"));
+        MetricsUtil.name(KeyTransparencyAuditorServiceClient.class, "sendSignedTreeHead"));
     this.getUpdatesDistributionSummary = DistributionSummary
-        .builder(MetricsUtil.name(KeyTransparencyServiceClient.class, "getUpdates"))
+        .builder(MetricsUtil.name(KeyTransparencyAuditorServiceClient.class, "getUpdates"))
         .distributionStatisticExpiry(Duration.ofHours(2))
         .register(meterRegistry);
   }
@@ -67,7 +67,7 @@ public class KeyTransparencyServiceClient {
           }
         })
         .flatMapIterable(auditResponseAndOffset -> auditResponseAndOffset.getT1().getUpdatesList())
-        .map(KeyTransparencyServiceClient::fromAuditorUpdateProtobuf);
+        .map(KeyTransparencyAuditorServiceClient::fromAuditorUpdateProtobuf);
   }
 
   private Mono<Tuple2<AuditResponse, Long>> fetchPage(final long start, final int batchSize) {

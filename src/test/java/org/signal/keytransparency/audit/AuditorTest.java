@@ -44,7 +44,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.signal.keytransparency.audit.client.AuditResponse;
-import org.signal.keytransparency.audit.client.KeyTransparencyServiceClient;
+import org.signal.keytransparency.audit.client.KeyTransparencyAuditorServiceClient;
 import org.signal.keytransparency.audit.storage.AuditorState;
 import org.signal.keytransparency.audit.storage.AuditorStateRepository;
 import org.signal.keytransparency.audit.storage.LogTreeNode;
@@ -53,7 +53,7 @@ import reactor.core.publisher.Flux;
 
 public class AuditorTest {
   private AuditorStateRepository auditorStateRepository;
-  private KeyTransparencyServiceClient keyTransparencyServiceClient;
+  private KeyTransparencyAuditorServiceClient keyTransparencyServiceClient;
   private AuditorConfiguration auditorConfiguration;
   private Auditor auditor;
   private TestClock clock;
@@ -88,7 +88,7 @@ public class AuditorTest {
 
     when(auditorStateRepository.getAuditorStateAndSignature()).thenReturn(Optional.empty());
     clock  = TestClock.pinned(Instant.EPOCH);
-    keyTransparencyServiceClient = mock(KeyTransparencyServiceClient.class);
+    keyTransparencyServiceClient = mock(KeyTransparencyAuditorServiceClient.class);
     auditor = new Auditor(auditorConfiguration, auditorStateRepository, keyTransparencyServiceClient, 100,
         Duration.ofMinutes(1), new SimpleMeterRegistry(), clock);
     auditor.loadStoredState();
@@ -100,7 +100,7 @@ public class AuditorTest {
     when(auditorStateRepository.getAuditorStateAndSignature()).thenReturn(Optional.empty());
     when(keyTransparencyServiceClient.getUpdates(anyLong(), anyInt()))
         .thenReturn(Flux.fromIterable(auditResponse.getUpdatesList())
-            .map(KeyTransparencyServiceClient::fromAuditorUpdateProtobuf));
+            .map(KeyTransparencyAuditorServiceClient::fromAuditorUpdateProtobuf));
 
     assertThrows(RuntimeException.class, () -> auditor.auditKeyTransparencyService());
   }
@@ -122,7 +122,7 @@ public class AuditorTest {
 
     for (TestVectors.ShouldSucceedTestVector.UpdateAndHash updateAndHash : succeedTestVector.getUpdatesList()) {
       when(keyTransparencyServiceClient.getUpdates(anyLong(), anyInt()))
-          .thenReturn(Flux.just(KeyTransparencyServiceClient.fromAuditorUpdateProtobuf(updateAndHash.getUpdate())));
+          .thenReturn(Flux.just(KeyTransparencyAuditorServiceClient.fromAuditorUpdateProtobuf(updateAndHash.getUpdate())));
 
       assertDoesNotThrow(() -> auditor.auditKeyTransparencyService());
       assertArrayEquals(updateAndHash.getLogRoot().toByteArray(), auditor.getLogTreeRootHash());
@@ -146,7 +146,7 @@ public class AuditorTest {
         .subList(0, numUpdates)
         .stream()
         .map(TestVectors.ShouldSucceedTestVector.UpdateAndHash::getUpdate)
-        .map(KeyTransparencyServiceClient::fromAuditorUpdateProtobuf)
+        .map(KeyTransparencyAuditorServiceClient::fromAuditorUpdateProtobuf)
         .toList();
 
     when(keyTransparencyServiceClient.getUpdates(anyLong(), anyInt()))
@@ -184,7 +184,7 @@ public class AuditorTest {
     final List<AuditorUpdate> updates = succeedTestVector.getUpdatesList()
         .stream()
         .map(TestVectors.ShouldSucceedTestVector.UpdateAndHash::getUpdate)
-        .map(KeyTransparencyServiceClient::fromAuditorUpdateProtobuf)
+        .map(KeyTransparencyAuditorServiceClient::fromAuditorUpdateProtobuf)
         .toList();
 
     when(keyTransparencyServiceClient.getUpdates(anyLong(), anyInt()))
@@ -215,7 +215,7 @@ public class AuditorTest {
 
     TestVectors.ShouldSucceedTestVector succeedTestVector = testVectors.getShouldSucceed();
 
-    final AuditorUpdate update = KeyTransparencyServiceClient.fromAuditorUpdateProtobuf(
+    final AuditorUpdate update = KeyTransparencyAuditorServiceClient.fromAuditorUpdateProtobuf(
         succeedTestVector.getUpdatesList()
             .getFirst()
             .getUpdate()

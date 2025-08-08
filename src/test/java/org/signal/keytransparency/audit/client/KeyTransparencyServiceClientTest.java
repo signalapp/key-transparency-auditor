@@ -21,18 +21,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class KeyTransparencyServiceClientTest {
+class KeyTransparencyAuditorServiceClientTest {
 
-  private KeyTransparencyServiceGrpc.KeyTransparencyServiceBlockingStub stub;
-  private KeyTransparencyServiceClient client;
+  private KeyTransparencyAuditorServiceGrpc.KeyTransparencyAuditorServiceBlockingStub stub;
+  private KeyTransparencyAuditorServiceClient client;
 
   private static final int EXISTING_UPDATE_COUNT = 13;
   private static final int BATCH_SIZE = 77;
 
   @BeforeEach
   void setUp() {
-    stub = mock(KeyTransparencyServiceGrpc.KeyTransparencyServiceBlockingStub.class);
-    client = new KeyTransparencyServiceClient(stub, new SimpleMeterRegistry());
+    stub = mock(KeyTransparencyAuditorServiceGrpc.KeyTransparencyAuditorServiceBlockingStub.class);
+    client = new KeyTransparencyAuditorServiceClient(stub, new SimpleMeterRegistry());
   }
 
   @Test
@@ -60,7 +60,7 @@ class KeyTransparencyServiceClientTest {
     final List<org.signal.keytransparency.audit.AuditorUpdate> expectedUpdates =
         Stream.concat(Stream.concat(firstPage.getUpdatesList().stream(), secondPage.getUpdatesList().stream()),
                 thirdPage.getUpdatesList().stream())
-            .map(KeyTransparencyServiceClient::fromAuditorUpdateProtobuf)
+            .map(KeyTransparencyAuditorServiceClient::fromAuditorUpdateProtobuf)
             .toList();
 
     final List<org.signal.keytransparency.audit.AuditorUpdate> retrievedUpdates =

@@ -29,13 +29,13 @@ import java.time.Instant;
 import java.util.Collection;
 
 @Factory
-class KeyTransparencyServiceStubFactory {
-  private static final Logger logger = LoggerFactory.getLogger(KeyTransparencyServiceStubFactory.class);
+class KeyTransparencyAuditorServiceStubFactory {
+  private static final Logger logger = LoggerFactory.getLogger(KeyTransparencyAuditorServiceStubFactory.class);
   private static final String DAYS_UNTIL_AUDITOR_CLIENT_CERTIFICATE_EXPIRATION_GAUGE_NAME =
-      MetricsUtil.name(KeyTransparencyServiceStubFactory.class, "daysUntilAuditorClientCertificateExpiration");
+      MetricsUtil.name(KeyTransparencyAuditorServiceStubFactory.class, "daysUntilAuditorClientCertificateExpiration");
 
   @Singleton
-  KeyTransparencyServiceGrpc.KeyTransparencyServiceBlockingStub keyTransparencyServiceClient(
+  KeyTransparencyAuditorServiceGrpc.KeyTransparencyAuditorServiceBlockingStub keyTransparencyServiceClient(
       @Value("${auditor.key-transparency-host}") String host,
       @Value("${auditor.key-transparency-port}") int port,
       @Value("${auditor.client-certificate}") String clientCertificate,
@@ -52,7 +52,7 @@ class KeyTransparencyServiceStubFactory {
       configureClientCertificateMetrics(clientCertificate);
       final ManagedChannel channel = Grpc.newChannelBuilderForAddress(host, port, tlsChannelCredentials)
           .build();
-      return KeyTransparencyServiceGrpc.newBlockingStub(channel);
+      return KeyTransparencyAuditorServiceGrpc.newBlockingStub(channel);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

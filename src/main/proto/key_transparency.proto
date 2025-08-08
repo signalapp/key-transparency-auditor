@@ -13,11 +13,11 @@ package kt;
 import "google/protobuf/empty.proto";
 
 /**
- * A key transparency service used to update the transparency log and to accept auditor-signed tree heads.
- * With the exception of the third-party auditor, this service's endpoints are *not* intended to be used by external clients.
+ * A key transparency service used to provide data to auditors and to accept auditor-signed tree heads.
+ * Outside of third-party auditors, this service's endpoints are *not* intended to be used by external clients.
  * It will reject calls from unauthenticated callers.
  */
-service KeyTransparencyService {
+service KeyTransparencyAuditorService {
   /**
    * Auditors use this endpoint to request a batch of key transparency service updates to audit.
    */
