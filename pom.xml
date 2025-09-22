@@ -19,6 +19,8 @@
     <micronaut.runtime>netty</micronaut.runtime>
     <exec.mainClass>org.signal.keytransparency.audit.Application</exec.mainClass>
     <errorprone.annotation.version>2.30.0</errorprone.annotation.version>
+    <!-- eclipse-temurin:24.0.2_12-jre-noble (note: always use the multi-arch manifest *LIST* here); see https://hub.docker.com/_/eclipse-temurin -->
+    <docker.image.sha256>85ecfc9bbb42af046d2bacbf1219d2005be4840cbfa16c2e6fd910d9ccfec95b</docker.image.sha256>
   </properties>
 
   <repositories>
@@ -283,6 +285,16 @@
             <arg>-Amicronaut.processing.group=hello.world</arg>
             <arg>-Amicronaut.processing.module=hello-world</arg>
           </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>${jib-maven-plugin.version}</version>
+        <configuration>
+          <from>
+            <image>eclipse-temurin@sha256:${docker.image.sha256}</image>
+          </from>
         </configuration>
       </plugin>
     </plugins>
