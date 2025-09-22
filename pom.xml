@@ -295,6 +295,13 @@
           <from>
             <image>eclipse-temurin@sha256:${docker.image.sha256}</image>
           </from>
+          <container>
+            <!-- Jib uses the ASM library to automatically infer a main class. However, the latest Jib version 3.4.6
+            does not use an ASM library that supports projects compiled with Java 24. To work around this,
+            we disable auto-inference and manually set the main class.
+            https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#i-am-seeing-unsupported-class-file-major-version-when-building -->
+            <mainClass>org.signal.keytransparency.audit.Application</mainClass>
+          </container>
         </configuration>
       </plugin>
     </plugins>
