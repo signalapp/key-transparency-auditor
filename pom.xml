@@ -143,6 +143,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <!-- Resolve a dependency resolution conflict from grpc-protobuf 1.69.1.-->
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>${errorprone.annotation.version}</version>
+    </dependency>
+    <dependency>
       <!-- Resolve a dependency resolution conflict from micronaut-grpc-client-runtime by preferring
       the newer, direct version specified in micronaut-grpc-client-runtime 4.12.0.-->
       <groupId>com.google.code.gson</groupId>
