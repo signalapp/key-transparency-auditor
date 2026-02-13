@@ -1,6 +1,12 @@
 micronaut:
   application:
     name: key-transparency-auditor
+  metrics:
+    enabled: true
+    export:
+      otlp:
+        enabled: false
+        step: 60s
 
 # Use SDK autoconfiguration (https://opentelemetry.io/docs/languages/java/configuration/#zero-code-sdk-autoconfigure)
 # and io.micronaut.tracing.opentelemetry.DefaultOpenTelemetryFactory
