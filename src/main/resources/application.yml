@@ -1,3 +1,13 @@
 micronaut:
   application:
     name: key-transparency-auditor
+
+# Use SDK autoconfiguration (https://opentelemetry.io/docs/languages/java/configuration/#zero-code-sdk-autoconfigure)
+# and io.micronaut.tracing.opentelemetry.DefaultOpenTelemetryFactory
+#
+# There is no metrics exporter because micrometer submits OTLP directly.
+otel:
+  logs:
+    exporter: otlp
+  exporter:
+    otlp: {}
