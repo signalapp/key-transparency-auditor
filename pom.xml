@@ -20,6 +20,10 @@
     <exec.mainClass>org.signal.keytransparency.audit.Application</exec.mainClass>
     <errorprone.annotation.version>2.30.0</errorprone.annotation.version>
     <gson.version>2.13.2</gson.version>
+
+    <!-- Work around a Micronaut compatibility issue: https://github.com/micronaut-projects/micronaut-micrometer/issues/1102 -->
+    <protobuf.version>4.33.0</protobuf.version>
+
     <!-- eclipse-temurin:24.0.2_12-jre-noble (note: always use the multi-arch manifest *LIST* here); see https://hub.docker.com/_/eclipse-temurin -->
     <docker.image.sha256>85ecfc9bbb42af046d2bacbf1219d2005be4840cbfa16c2e6fd910d9ccfec95b</docker.image.sha256>
   </properties>
