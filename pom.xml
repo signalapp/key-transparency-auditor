@@ -10,7 +10,7 @@
   <parent>
     <groupId>io.micronaut.platform</groupId>
     <artifactId>micronaut-parent</artifactId>
-    <version>4.10.12</version>
+    <version>4.10.13</version>
   </parent>
   <properties>
     <packaging>jar</packaging>
@@ -19,7 +19,7 @@
     <micronaut.runtime>netty</micronaut.runtime>
     <exec.mainClass>org.signal.keytransparency.audit.Application</exec.mainClass>
     <errorprone.annotation.version>2.30.0</errorprone.annotation.version>
-    <gson.version>2.13.2</gson.version>
+    <gson.version>2.14.0</gson.version>
 
     <!-- Work around a Micronaut compatibility issue: https://github.com/micronaut-projects/micronaut-micrometer/issues/1102 -->
     <protobuf.version>4.33.0</protobuf.version>
