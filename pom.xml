@@ -103,12 +103,6 @@
       <groupId>io.micronaut.grpc</groupId>
       <artifactId>micronaut-grpc-client-runtime</artifactId>
       <exclusions>
-        <!-- micronaut-grpc-client-runtime's grpc-core dependency directly specifies a version
-        that conflicts with one transitively pulled in. -->
-        <exclusion>
-          <groupId>com.google.errorprone</groupId>
-          <artifactId>error_prone_annotations</artifactId>
-        </exclusion>
         <!-- micronaut-grpc-client-runtime's grpc-core dependency specifies a version
         that conflicts with the one directly specified by micronaut-grpc-client-runtime. -->
         <exclusion>
