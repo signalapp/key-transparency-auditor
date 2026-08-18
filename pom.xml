@@ -14,8 +14,8 @@
   </parent>
   <properties>
     <packaging>jar</packaging>
-    <jdk.version>24</jdk.version>
-    <release.version>24</release.version>
+    <jdk.version>26</jdk.version>
+    <release.version>26</release.version>
     <micronaut.runtime>netty</micronaut.runtime>
     <exec.mainClass>org.signal.keytransparency.audit.Application</exec.mainClass>
     <errorprone.annotation.version>2.30.0</errorprone.annotation.version>
@@ -24,8 +24,8 @@
     <!-- Work around a Micronaut compatibility issue: https://github.com/micronaut-projects/micronaut-micrometer/issues/1102 -->
     <protobuf.version>4.33.0</protobuf.version>
 
-    <!-- eclipse-temurin:24.0.2_12-jre-noble (note: always use the multi-arch manifest *LIST* here); see https://hub.docker.com/_/eclipse-temurin -->
-    <docker.image.sha256>85ecfc9bbb42af046d2bacbf1219d2005be4840cbfa16c2e6fd910d9ccfec95b</docker.image.sha256>
+    <!-- eclipse-temurin:26.0.1_8-jre-resolute (note: always use the multi-arch manifest *LIST* here); see https://hub.docker.com/_/eclipse-temurin -->
+    <docker.image.sha256>368d21fc4c12628d9cdb40c859d04ca863c9dd4629f674dc30bded7b28ac2485</docker.image.sha256>
   </properties>
 
   <repositories>
