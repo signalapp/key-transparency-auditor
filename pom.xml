@@ -264,7 +264,7 @@
         <version>${jib-maven-plugin.version}</version>
         <configuration>
           <from>
-            <image>eclipse-temurin@sha256:${docker.image.sha256}</image>
+            <image>${docker.image}</image>
           </from>
           <container>
             <!-- Jib uses the ASM library to automatically infer a main class. However, the latest Jib version 3.4.6
