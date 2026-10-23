@@ -9,6 +9,7 @@ import io.grpc.ChannelCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.TlsChannelCredentials;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Value;
@@ -30,9 +31,14 @@ import java.util.Collection;
 
 @Factory
 class KeyTransparencyAuditorServiceStubFactory {
+  private final MeterRegistry meterRegistry;
   private static final Logger logger = LoggerFactory.getLogger(KeyTransparencyAuditorServiceStubFactory.class);
   private static final String DAYS_UNTIL_AUDITOR_CLIENT_CERTIFICATE_EXPIRATION_GAUGE_NAME =
       MetricsUtil.name(KeyTransparencyAuditorServiceStubFactory.class, "daysUntilAuditorClientCertificateExpiration");
+
+  KeyTransparencyAuditorServiceStubFactory(final MeterRegistry meterRegistry) {
+    this.meterRegistry = meterRegistry;
+  }
 
   @Singleton
   KeyTransparencyAuditorServiceGrpc.KeyTransparencyAuditorServiceBlockingStub keyTransparencyServiceClient(
@@ -84,7 +90,7 @@ class KeyTransparencyAuditorServiceStubFactory {
       if (certificate instanceof X509Certificate x509Cert) {
         final Instant expiration = Instant.ofEpochMilli(x509Cert.getNotAfter().getTime());
 
-        Metrics.gauge(DAYS_UNTIL_AUDITOR_CLIENT_CERTIFICATE_EXPIRATION_GAUGE_NAME,
+        meterRegistry.gauge(DAYS_UNTIL_AUDITOR_CLIENT_CERTIFICATE_EXPIRATION_GAUGE_NAME,
             this,
             (ignored) -> Duration.between(Instant.now(), expiration).toDays());
 
