@@ -272,6 +272,9 @@
             we disable auto-inference and manually set the main class.
             https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#i-am-seeing-unsupported-class-file-major-version-when-building -->
             <mainClass>org.signal.keytransparency.audit.Application</mainClass>
+            <jvmFlags>
+              <jvmFlag>-XX:-UseBASE64Intrinsics</jvmFlag>
+            </jvmFlags>
           </container>
         </configuration>
       </plugin>
